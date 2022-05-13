@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/home">
+    <fragment
+        android:id="@+id/home"
+        android:name="com.example.catbreeds.view.fragments.Home"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_home3_to_catDetails"
+            app:destination="@id/catDetails" />
+        <action
+            android:id="@+id/action_home3_to_favourites"
+            app:destination="@id/favourites" />
+    </fragment>
+    <fragment
+        android:id="@+id/catDetails"
+        android:name="com.example.catbreeds.view.fragments.CatDetails"
+        android:label="fragment_cat_details"
+        tools:layout="@layout/fragment_cat_details" >
+        <action
+            android:id="@+id/action_catDetails_to_home3"
+            app:destination="@id/home" />
+    </fragment>
+    <fragment
+        android:id="@+id/favourites"
+        android:name="com.example.catbreeds.view.fragments.Favourites"
+        android:label="fragment_favourites"
+        tools:layout="@layout/fragment_favourites" >
+        <action
+            android:id="@+id/action_favourites_to_home3"
+            app:destination="@id/home" />
+    </fragment>
+    <fragment
+        android:id="@+id/splashScreen"
+        android:name="com.example.catbreeds.view.fragments.SplashScreen"
+        android:label="fragment_splah_screen"
+        tools:layout="@layout/fragment_splah_screen" >
+        <action
+            android:id="@+id/action_splashScreen_to_home3"
+            app:destination="@id/home" />
+    </fragment>
+</navigation>
