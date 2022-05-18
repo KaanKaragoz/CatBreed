@@ -24,6 +24,9 @@
         <action
             android:id="@+id/action_catDetails_to_home3"
             app:destination="@id/home" />
+        <argument
+            android:name="name"
+            app:argType="com.example.catbreeds.model.Breed" />
     </fragment>
     <fragment
         android:id="@+id/favourites"

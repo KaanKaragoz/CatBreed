@@ -6,11 +6,22 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Headers
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface RetrofitService {
-    @GET("breeds?attach_breed=0")
-    fun getBreeds(): Call<List<Breed>>
+
+    @GET("breeds/search")
+    fun getBreeds(
+        @Query("q") searchText : String,
+        @Query("api_key") id : String
+    ): Call<List<Breed>>
+
+    @GET("breeds/")
+    fun getDefaultBreeds(
+    ): Call<List<Breed>>
 
     companion object {
         var BASE_URL = "https://api.thecatapi.com/v1/"
@@ -22,6 +33,12 @@ interface RetrofitService {
                 .build()
             return retrofit.create(RetrofitService::class.java)
         }
+
+
     }
+
+
+
+
 }
 

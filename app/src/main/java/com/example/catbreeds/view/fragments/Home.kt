@@ -4,25 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.catbreeds.R
 import com.example.catbreeds.adapters.BreedsRecyclerAdapter
+import com.example.catbreeds.databinding.FragmentHomeBinding
 import com.example.catbreeds.model.Breed
-import com.example.catbreeds.retrofit.MainRepository
 import com.example.catbreeds.retrofit.RetrofitService
 import com.example.catbreeds.viewmodel.HomeViewModel
-import com.example.catbreeds.viewmodel.ViewModelFactory
 
 class Home : Fragment() {
     private val retrofitService = RetrofitService.create()
     lateinit var viewModel : HomeViewModel
-    private val blankData = ArrayList<Breed>() //TODO silinecek, deneme için var
-   // private var layoutManager: RecyclerView.LayoutManager? = null //TODO silinecek, deneme için var
-   //  private var adapter: RecyclerView.Adapter<BreedsRecyclerAdapter.ViewHolder>? = null //TODO silinecek, deneme için var
+    private  var  _binding : FragmentHomeBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var localDataSet : List<Breed>
 
 
     override fun onCreateView(
@@ -30,22 +29,66 @@ class Home : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        _binding = FragmentHomeBinding.inflate(inflater,container,false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this, ViewModelFactory(MainRepository(retrofitService))).get(HomeViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
+        setupObservers()
+        setupOnClickListeners()
+        initializeRecyclerView()
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun initializeRecyclerView() {
+        // uygulama açılışında search için text vermeden dönen kedi cinsleri gösterilecek.
+        viewModel.handleBreeds(null)
+    }
+
+    private fun setupObservers() {
         viewModel.breedlist.observe(viewLifecycleOwner, Observer {
-            //view.findViewById<TextView>(R.id.txtDeneme).text = it.toString()  //TODO silinecek, deneme için var
-            view.findViewById<RecyclerView>(R.id.catBreedsRecyclerView).apply {
+            binding.catBreedsRecyclerView.apply {
                 layoutManager = LinearLayoutManager(activity)
-                adapter = BreedsRecyclerAdapter(it)
+                adapter = BreedsRecyclerAdapter(it,viewModel,localDataSet)
             }
         })
-        viewModel.getAllBreeds()
+        viewModel.readAllData.observe(viewLifecycleOwner, Observer {
+            localDataSet = it
+        })
+    }
+
+    private fun handleItemLike(list : List<Breed>){
+
+    }
+
+    private fun setupOnClickListeners() {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+
+                return false
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                    // girilen kedi türü aranıyor
+                    viewModel.handleBreeds(p0)
+                return false
+            }
+        })
+
+        binding.btnFavouritesFragment.setOnClickListener {
+            val action = HomeDirections.actionHome3ToFavourites()
+            Navigation.findNavController(it).navigate(action)
+        }
+
 
 
     }
